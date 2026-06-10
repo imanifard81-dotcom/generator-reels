@@ -29,8 +29,7 @@ Rules:
 Format:
 {"slides": [...]}`;
 
-  const userPrompt = Topic: ${topic};
-
+const userPrompt = String("Topic: " + topic);
   try {
     const model = client.getGenerativeModel({ model: "gemini-2.0-flash" });
     const result = await model.generateContent(systemPrompt + "\n" + userPrompt);
