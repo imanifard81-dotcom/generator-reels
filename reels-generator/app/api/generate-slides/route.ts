@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import Anthropic from "@anthropic-ai/sdk";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const client = new GoogleGenerativeAI(process.env.ANTHROPIC_API_KEY || "");
 
 const VALID_POSES = [
   "explain","think","laptop","wow","thumbs","teach","warn","ask","cheer","sit"
@@ -29,23 +29,14 @@ Rules:
 Format:
 {"slides": [...]}`;
 
-  const userPrompt = `Topic: ${topic}`;
+  const userPrompt = Topic: ${topic};
 
   try {
-    const response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 1000,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    });
-
-    const raw = response.content[0].type === "text" ? response.content[0].text : "";
-    const clean = raw.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
-
-    // Validate
+    const model = client.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const result = await model.generateContent(systemPrompt + "\n" + userPrompt);
+    const raw = result.response.text().replace(/```json|```/g, "").trim();
+    const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed.slides)) throw new Error("فرمت پاسخ نادرست");
-
     return NextResponse.json(parsed);
   } catch (e: unknown) {
     console.error(e);
