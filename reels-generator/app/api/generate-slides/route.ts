@@ -45,5 +45,5 @@ const userPrompt = String("Topic: " + topic);
     );
   }
 }
-  }
+  
 }
