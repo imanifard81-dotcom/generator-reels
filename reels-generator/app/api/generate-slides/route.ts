@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const client = new GoogleGenerativeAI(process.env.ANTHROPIC_API_KEY || "");
-
+const client = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 const VALID_POSES = ["explain","think","laptop","wow","thumbs","teach","warn","ask","cheer","sit"];
 
 export async function POST(req: NextRequest) {
